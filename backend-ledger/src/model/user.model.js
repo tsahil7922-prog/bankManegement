@@ -30,12 +30,13 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-userSchema.pre("save", async function (next) {
+// this middleware will run before saving the user document to the database. It checks if the password field has been modified, and if so, it hashes the password using bcrypt before saving it. This ensures that passwords are stored securely in the database.
+userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
   const hash = await bcrypt.hash(this.password, 10);
-  return next();
+  return (this.password = hash);
 });
 
 userSchema.methods.comparePassword = async function (password) {
