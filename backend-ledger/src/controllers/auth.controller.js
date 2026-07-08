@@ -1,6 +1,7 @@
 const userModal = require("../model/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const emailService = require("../services/email.service");
 async function registerUserController(req, res) {
   // Implementation for user registration
   const { email, name, password } = req.body;
@@ -46,6 +47,8 @@ async function registerUserController(req, res) {
       name: user.name,
     },
   });
+
+  await emailService.sendRegistrationEmail(user.email, user.name); // Call the email service to send the registration email
 }
 
 async function loginUserController(req, res) {
